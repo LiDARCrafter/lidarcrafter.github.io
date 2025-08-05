@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="keywords" content="4D LiDAR Scene Generation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LiDARCrafter</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+  <link rel="icon" href="./static/images/lidarcrafter.png" type="image/x-icon">
+
+
+  <style>
+    .a {
+      color: rgb(192,0,0);
+    }
+    .columns {
+      display: flex; justify-content: flex-start; padding: 5px; text-align: left;
+    }
+    .tag {
+      background-color: #f5f5f5; border-radius: 3px; padding: 5px; margin-right: 5px; font-size: 14px; color: #333;
+    }
+    .mp4-demo {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      object-fit: cover;
+      background: #000;
+      margin-bottom: 2px; /* reduce bottom spacing */
+    }
+    figcaption {
+      font-size: 0.9em;
+      margin-top: 2px; /* reduce top spacing of caption */
+      color: #444;
+    }
+  </style>
+
+  <link rel="icon" href="./static/images/favicon.ico" type="image/x-icon">
+
+
+  <style>
+    #backToTopBtn {
+      position: fixed; bottom: 20px; right: 50px; z-index: 999;
+      background-color: rgb(227, 104, 92); color: white; border: none;
+      border-radius: 50%; padding: 12px 16px;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2); transition: opacity 0.3s; display: none;
+    }
+    #backToTopBtn:hover {
+      background-color: rgb(0, 176, 240);
+    }
+    @media (max-width: 768px) {
+      #backToTopBtn {
+        font-size: 18px;
+        padding: 10px 14px;
+      }
+    }
+    .img-hover-effect {
+      transition: transform 0.3s ease-in-out;
+    }
+    .img-hover-effect:hover {
+      transform: scale(1.05);
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      padding-top: 56.25%; /* 16:9 aspect ratio */
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .iframe-container .iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .click-and-move-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      z-index: 1;
+      font-size: 1.2em;
+      padding: 0.5rem;
+    }
+
+    .inline-image {
+      height: 1.2em;
+      vertical-align: middle;
+    }
+  </style>
+
+</head>
+
+
+<!-- Navbar -->
+<nav class="navbar is-light is-fixed-top" role="navigation" aria-label="main navigation" style="background-color: #f8f8f8; z-index: 998;">
+  <div class="container is-max-desktop">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://LiDARCrafter.github.io/">
+        &nbsp;&nbsp;<img src="./static/images/lidarcrafter.png" style="height: 37px; vertical-align: top" class="img-hover-effect">&nbsp;&nbsp;<strong>LiDARCrafter</strong>&nbsp;&nbsp;
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasic">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarBasic" class="navbar-menu">
+      <div class="navbar-start">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-item" href="#overview"><i class="fa fa-eye"></i>&nbsp;&nbsp;Overview&nbsp;&nbsp;</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-item" href="#methodology"><i class="fa fa-th-large"></i>&nbsp;&nbsp;Methodology&nbsp;&nbsp;</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-item" href="#experiments"><i class="fa fa-street-view"></i>&nbsp;&nbsp;Experiments&nbsp;&nbsp;</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+<body>
+
+  <button onclick="scrollToTop()" id="backToTopBtn" title="Go to top">↑</button>
+  <script>
+    window.onscroll = function() {
+      scrollFunction();
+    };
+    function scrollFunction() {
+      const button = document.getElementById("backToTopBtn");
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        button.style.display = "block";
+      } else {
+        button.style.display = "none";
+      }
+    }
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+  
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              </br>
+              <img src="./static/images/lidarcrafter.png" style="height: 160px; vertical-align: top" class="img-hover-effect">
+              </br>
+              LiDARCrafter: Dynamic 4D World Modeling from LiDAR Sequences
+            </h1>
+
+          </div>
+        </div><hr>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" style="margin-top: -100px;"></section>
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class=" column is-full-width has-text-centered">
+      <img src="./static/images/teaser.png" />
+      <div class="content has-text-justified" style="padding-top: 10px">
+        <p>
+          We propose <b>LiDARCrafter</b>, a 4D LiDAR-based generative world model that supports controllable point cloud layout generation (<b>left</b>), dynamic sequential scene generation (<b>center</b>), and rich scene editing applications (<b>right</b>).
+          Our framework enables intuitive <b>``what you describe is what you get''</b> LiDAR-based 4D world modeling.
+        </p>
+      </div>
+      <hr>
+    </div>
+  </div>
+  </div>
+  </section> 
+  <br>
+
+
+
+  <section class="section" id="overview">
+    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Overview</h2>
+    
+      <div class="content has-text-justified" style="padding-top: 0px">
+        <p>
+          Generative world models have become essential data engines for autonomous driving, yet most existing efforts focus on videos or occupancy grids, overlooking the unique LiDAR properties. 
+          Extending LiDAR generation to dynamic 4D world modeling presents challenges in controllability, temporal coherence, and evaluation standardization. To this end, we present <b>LiDARCrafter</b>, a unified framework for 4D LiDAR generation and editing. 
+          Given free-form natural language inputs, we parse instructions into ego-centric scene graphs, which condition a tri-branch diffusion network to generate object structures, motion trajectories, and geometry. 
+          These structured conditions enable diverse and fine-grained scene editing. Additionally, an autoregressive module generates temporally coherent 4D LiDAR sequences with smooth transitions. 
+          To support standardized evaluation, we establish a comprehensive benchmark with diverse metrics spanning scene-, object-, and sequence-level aspects. 
+          Experiments on the nuScenes dataset using this benchmark demonstrate that LiDARCrafter achieves state-of-the-art performance in fidelity, controllability, and temporal consistency across all levels, 
+          paving the way for data augmentation and simulation. The code and benchmark are released to the community.
+        </p>
+      </div>
+      <hr>
+  </section>
+
+
+
+
+  <section class="section" id="methodology">
+
+    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Methodology</h2>
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class=" column is-full-width has-text-centered">
+          </br>
+          <img src="./static/images/framework.png" />
+          <div class="content has-text-justified" style="padding-top: 10px">
+            <p>
+              Framework of <b>LiDARCrafter</b>. In the <b>Text2Layout</b> stage, the natural-language instruction is parsed into an ego-centric scene graph, and a tri-branch diffusion network generates 4D conditions for bounding boxes, future trajectories, and object point clouds. 
+              In the <b>Layout2Scene</b> stage, a range-image diffusion model uses these conditions to generate a static LiDAR frame. In the <b>Scene2Seq</b> stage, an autoregressive module warps historical points with ego and object motion priors to generate each subsequent frame, producing a temporally coherent LiDAR sequence.
+            </p>            
+          </div>
+          <hr>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="section" id="experiments">
+    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Experiments</h2>
+
+      <div class="columns is-centered has-text-centered">
+        <div class="container is-max-desktop">
+          <h2 class="title is-5">
+            Comparisons of 3D detection methods for vehicle→drone/quadruped tasks
+          </h2>
+          <p>
+            We report the average precision (AP) in “BEV / 3D” at IoU thresholds of 0.7 and 0.5. Symbol ‡ denotes algorithms <em>w.o.</em> ROS. All scores are given in percentage (%). “–” denotes code not available. The <span style="color:red;">Best</span> and <span style="color:blue;">Second Best</span> scores under each metric are highlighted in red and blue, respectively.
+          </p>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th rowspan="3">#</th>
+                  <th rowspan="3">Method</th>
+                  <th colspan="4">
+                    <img src="./static/images/icons/vehicle.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Vehicle" />
+                    Vehicle → 
+                    <img src="./static/images/icons/quadruped.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Quadruped" />
+                    Quadruped
+                  </th>
+                  <th colspan="4">
+                    <img src="./static/images/icons/vehicle.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Vehicle" />
+                    Vehicle → 
+                    <img src="./static/images/icons/drone.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Drone" />
+                    Drone
+                  </th>
+                  <th colspan="2" rowspan="2">Average</th>
+                </tr>
+                <tr>
+                  <th colspan="2" style="text-align:center;">PV-RCNN</th>
+                  <th colspan="2" style="text-align:center;">Voxel RCNN</th>
+                  <th colspan="2" style="text-align:center;">PV-RCNN</th>
+                  <th colspan="2" style="text-align:center;">Voxel RCNN</th>
+                </tr>
+                <tr>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- nuScenes group -->
+                <tr>
+                  <td rowspan="10" style="writing-mode: vertical-rl; transform: rotate(180deg);">nuScenes</td>
+                  <td style="background-color:#f5f5f5; color:gray;">Source Platform</td>
+                  <td style="background-color:#f5f5f5; color:gray;">43.40 / 33.55</td>
+                  <td style="background-color:#f5f5f5; color:gray;">44.86 / 42.84</td>
+                  <td style="background-color:#f5f5f5; color:gray;">43.25 / 33.74</td>
+                  <td style="background-color:#f5f5f5; color:gray;">45.62 / 43.32</td>
+                  <td style="background-color:#f5f5f5; color:gray;">50.91 / 35.26</td>
+                  <td style="background-color:#f5f5f5; color:gray;">57.73 / 50.24</td>
+                  <td style="background-color:#f5f5f5; color:gray;">50.15 / 29.41</td>
+                  <td style="background-color:#f5f5f5; color:gray;">57.10 / 49.10</td>
+                  <td style="background-color:#f5f5f5; color:gray;">46.93 / 32.99</td>
+                  <td style="background-color:#f5f5f5; color:gray;">51.33 / 46.34</td>
+                </tr>
+                <tr>
+                  <td>ST3D</td>
+                  <td>55.40 / 42.02</td><td>59.59 / 54.75</td>
+                  <td>44.54 / 35.96</td><td>45.81 / 44.38</td>
+                  <td>65.05 / 40.01</td><td>68.93 / 64.09</td>
+                  <td>54.62 / 33.79</td><td>58.45 / 52.89</td>
+                  <td>54.90 / 37.95</td><td>58.20 / 54.03</td>
+                </tr>
+                <tr>
+                  <td>ST3D‡</td>
+                  <td>55.68 / <span style="color:blue; font-weight:bold;">44.50</span></td>
+                  <td>59.32 / 55.32</td>
+                  <td>45.01 / 37.13</td><td>46.73 / 45.45</td>
+                  <td>65.40 / 43.63</td><td><span style="color:blue; font-weight:bold;">69.24</span> / 64.88</td>
+                  <td>55.23 / 36.51</td><td>59.30 / 54.23</td>
+                  <td>55.33 / 40.44</td><td>58.65 / 54.97</td>
+                </tr>
+                <tr>
+                  <td>ST3D++</td>
+                  <td>55.76 / 43.51</td><td>59.93 / 55.28</td>
+                  <td>45.56 / 36.97</td><td>47.28 / 45.84</td>
+                  <td>60.91 / 40.09</td><td>68.96 / 59.96</td>
+                  <td>57.02 / 37.52</td><td>61.30 / 55.43</td>
+                  <td>54.81 / 39.52</td><td>59.37 / 54.13</td>
+                </tr>
+                <tr>
+                  <td>ST3D++‡</td>
+                  <td>54.96 / 40.81</td><td>60.47 / 54.65</td>
+                  <td>45.69 / 36.76</td><td>48.30 / 46.05</td>
+                  <td><span style="color:red; font-weight:bold;">65.50</span> / 43.46</td><td>68.99 / 64.62</td>
+                  <td>55.92 / 39.46</td><td>59.93 / 55.19</td>
+                  <td>55.52 / 40.12</td><td>59.42 / 55.13</td>
+                </tr>
+                <tr>
+                  <td>REDB</td>
+                  <td>52.43 / 41.34</td><td>57.12 / 54.18</td>
+                  <td>– / –</td><td>– / –</td>
+                  <td>65.31 / 39.19</td><td>68.74 / 64.13</td>
+                  <td>– / –</td><td>– / –</td>
+                  <td>– / –</td><td>– / –</td>
+                </tr>
+                <tr>
+                  <td>MS3D++</td>
+                  <td><span style="color:blue; font-weight:bold;">56.24</span> / 43.20</td>
+                  <td><span style="color:blue; font-weight:bold;">60.88</span> / <span style="color:blue; font-weight:bold;">56.13</span></td>
+                  <td><span style="color:blue; font-weight:bold;">51.50</span> / <span style="color:blue; font-weight:bold;">40.14</span></td>
+                  <td><span style="color:blue; font-weight:bold;">56.03</span> / <span style="color:blue; font-weight:bold;">53.86</span></td>
+                  <td><span style="color:blue; font-weight:bold;">66.99</span> / <span style="color:blue; font-weight:bold;">43.76</span></td>
+                  <td><span style="color:red; font-weight:bold;">69.87</span> / <span style="color:blue; font-weight:bold;">65.85</span></td>
+                  <td><span style="color:blue; font-weight:bold;">62.68</span> / <span style="color:blue; font-weight:bold;">38.26</span></td>
+                  <td><span style="color:blue; font-weight:bold;">68.34</span> / <span style="color:blue; font-weight:bold;">61.09</span></td>
+                  <td><span style="color:blue; font-weight:bold;">59.35</span> / <span style="color:blue; font-weight:bold;">41.34</span></td>
+                  <td><span style="color:blue; font-weight:bold;">63.78</span> / <span style="color:blue; font-weight:bold;">59.23</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Pi3DET‑Net</strong></td>
+                  <td><span style="color:red; font-weight:bold;">56.80</span> / <span style="color:red; font-weight:bold;">46.36</span></td>
+                  <td><span style="color:red; font-weight:bold;">61.54</span> / <span style="color:red; font-weight:bold;">57.20</span></td>
+                  <td><span style="color:red; font-weight:bold;">54.85</span> / <span style="color:red; font-weight:bold;">42.38</span></td>
+                  <td><span style="color:red; font-weight:bold;">57.41</span> / <span style="color:red; font-weight:bold;">55.54</span></td>
+                  <td>65.43 / <span style="color:red; font-weight:bold;">45.94</span></td>
+                  <td><span style="color:blue; font-weight:bold;">69.24</span> / <span style="color:red; font-weight:bold;">65.87</span></td>
+                  <td><span style="color:red; font-weight:bold;">65.63</span> / <span style="color:red; font-weight:bold;">44.62</span></td>
+                  <td><span style="color:red; font-weight:bold;">72.05</span> / <span style="color:red; font-weight:bold;">63.83</span></td>
+                  <td><span style="color:red; font-weight:bold;">60.68</span> / <span style="color:red; font-weight:bold;">44.83</span></td>
+                  <td><span style="color:red; font-weight:bold;">65.06</span> / <span style="color:red; font-weight:bold;">60.61</span></td>
+                </tr>
+                <tr>
+                  <td>Target Platform</td>
+                  <td>54.15 / 40.24</td><td>58.63 / 54.96</td>
+                  <td>54.90 / 39.74</td><td>56.46 / 55.19</td>
+                  <td>67.67 / 46.11</td><td>70.04 / 66.14</td>
+                  <td>68.52 / 46.53</td><td>70.67 / 61.42</td>
+                  <td>61.31 / 43.16</td><td>63.95 / 59.43</td>
+                </tr>
+      
+                <!-- Pi3DET (Vehicle) group -->
+                <tr><td colspan="12" style="height:1px;padding:0;background:#ddd;"></td></tr>
+                <tr>
+                  <td rowspan="10" style="writing-mode: vertical-rl; transform: rotate(180deg);">Pi3DET (Vehicle)</td>
+                  <td style="background-color:#f5f5f5; color:gray;">Source Platform</td>
+                  <td style="background-color:#f5f5f5; color:gray;">38.61 / 26.84</td>
+                  <td style="background-color:#f5f5f5; color:gray;">40.64 / 39.22</td>
+                  <td style="background-color:#f5f5f5; color:gray;">43.95 / 31.24</td>
+                  <td style="background-color:#f5f5f5; color:gray;">48.22 / 44.17</td>
+                  <td style="background-color:#f5f5f5; color:gray;">57.29 / 36.62</td>
+                  <td style="background-color:#f5f5f5; color:gray;">58.92 / 56.19</td>
+                  <td style="background-color:#f5f5f5; color:gray;">52.85 / 37.96</td>
+                  <td style="background-color:#f5f5f5; color:gray;">61.10 / 52.47</td>
+                  <td>48.17 / 33.16</td><td>52.22 / 48.01</td>
+                </tr>
+                <tr>
+                  <td>ST3D</td>
+                  <td>49.29 / 38.69</td><td>51.02 / 49.71</td>
+                  <td>47.70 / 37.91</td><td>48.07 / 47.59</td>
+                  <td>60.17 / 33.01</td><td>62.84 / 54.51</td>
+                  <td>53.79 / 40.18</td><td><span style="color:blue; font-weight:bold;">65.29</span> / 53.40</td>
+                  <td>52.74 / 37.45</td><td>56.81 / 51.30</td>
+                </tr>
+                <tr>
+                  <td>ST3D‡</td>
+                  <td>47.89 / 38.07</td><td>49.50 / 48.23</td>
+                  <td>47.01 / 41.85</td><td>54.01 / 53.46</td>
+                  <td>60.67 / 33.27</td><td>62.98 / 54.61</td>
+                  <td>53.85 / 40.02</td><td>62.70 / 53.08</td>
+                  <td>52.35 / 38.30</td><td>57.30 / 52.34</td>
+                </tr>
+                <tr>
+                  <td>ST3D++</td>
+                  <td>46.05 / 37.22</td><td>49.33 / 47.84</td>
+                  <td>48.52 / 37.84</td><td><span style="color:blue; font-weight:bold;">55.82</span> / 48.53</td>
+                  <td>60.04 / 33.98</td><td>62.71 / 54.13</td>
+                  <td>53.71 / 39.94</td><td>62.43 / 53.20</td>
+                  <td>52.08 / 37.24</td><td>57.57 / 50.92</td>
+                </tr>
+                <tr>
+                  <td>ST3D++‡</td>
+                  <td>45.14 / 35.70</td><td>46.94 / 45.37</td>
+                  <td>47.52 / 37.13</td><td>54.37 / 47.63</td>
+                  <td>64.15 / 34.20</td><td>63.81 / 55.44</td>
+                  <td>53.64 / 40.27</td><td>62.43 / 53.10</td>
+                  <td>52.61 / 36.83</td><td>56.89 / 50.38</td>
+                </tr>
+                <tr>
+                  <td>REDB</td>
+                  <td>46.74 / 38.47</td><td>50.29 / 49.54</td>
+                  <td>– / –</td><td>– / –</td>
+                  <td>61.57 / 34.05</td><td>63.22 / 54.07</td>
+                  <td>– / –</td><td>– / –</td>
+                  <td>– / –</td><td>– / –</td>
+                </tr>
+                <tr>
+                  <td>MS3D++</td>
+                  <td><span style="color:blue; font-weight:bold;">53.66</span> / <span style="color:blue; font-weight:bold;">40.66</span></td>
+                  <td><span style="color:blue; font-weight:bold;">55.21</span> / <span style="color:blue; font-weight:bold;">53.78</span></td>
+                  <td><span style="color:blue; font-weight:bold;">53.65</span> / <span style="color:blue; font-weight:bold;">41.93</span></td>
+                  <td>54.69 / <span style="color:blue; font-weight:bold;">54.00</span></td>
+                  <td><span style="color:blue; font-weight:bold;">66.05</span> / <span style="color:blue; font-weight:bold;">41.17</span></td>
+                  <td><span style="color:blue; font-weight:bold;">67.80</span> / <span style="color:blue; font-weight:bold;">63.26</span></td>
+                  <td><span style="color:blue; font-weight:bold;">53.85</span> / <span style="color:blue; font-weight:bold;">40.91</span></td>
+                  <td>62.87 / <span style="color:blue; font-weight:bold;">53.44</span></td>
+                  <td><span style="color:blue; font-weight:bold;">56.80</span> / <span style="color:blue; font-weight:bold;">41.17</span></td>
+                  <td><span style="color:blue; font-weight:bold;">60.14</span> / <span style="color:blue; font-weight:bold;">56.12</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Pi3DET‑Net</strong></td>
+                  <td><span style="color:red; font-weight:bold;">56.19</span> / <span style="color:red; font-weight:bold;">44.28</span></td>
+                  <td><span style="color:red; font-weight:bold;">60.35</span> / <span style="color:red; font-weight:bold;">56.20</span></td>
+                  <td><span style="color:red; font-weight:bold;">55.54</span> / <span style="color:red; font-weight:bold;">45.18</span></td>
+                  <td><span style="color:red; font-weight:bold;">59.48</span> / <span style="color:red; font-weight:bold;">58.90</span></td>
+                  <td><span style="color:red; font-weight:bold;">66.26</span> / <span style="color:red; font-weight:bold;">44.47</span></td>
+                  <td><span style="color:red; font-weight:bold;">68.25</span> / <span style="color:red; font-weight:bold;">63.36</span></td>
+                  <td><span style="color:red; font-weight:bold;">67.87</span> / <span style="color:red; font-weight:bold;">46.83</span></td>
+                  <td><span style="color:red; font-weight:bold;">69.95</span> / <span style="color:red; font-weight:bold;">66.26</span></td>
+                  <td><span style="color:red; font-weight:bold;">61.47</span> / <span style="color:red; font-weight:bold;">45.19</span></td>
+                  <td><span style="color:red; font-weight:bold;">64.51</span> / <span style="color:red; font-weight:bold;">61.18</span></td>
+                </tr>
+                <tr>
+                  <td>Target Platform</td>
+                  <td>54.15 / 40.24</td><td>58.63 / 54.96</td>
+                  <td>54.90 / 39.74</td><td>56.46 / 55.19</td>
+                  <td>67.67 / 46.11</td><td>70.04 / 66.14</td>
+                  <td>68.52 / 46.53</td><td>70.67 / 61.42</td>
+                  <td>61.31 / 43.16</td><td>63.95 / 59.43</td>
+                </tr>
+      
+                <!-- Combined All row -->
+                <tr>
+                  <td><strong>Combined All</strong></td>
+                  <td>58.21 / 46.27</td><td>62.18 / 59.67</td>
+                  <td>60.96 / 48.15</td><td>63.04 / 61.04</td>
+                  <td>68.44 / 48.19</td><td>71.11 / 68.24</td>
+                  <td>68.90 / 48.88</td><td>72.55 / 69.18</td>
+                  <td>64.13 / 47.87</td><td>67.22 / 64.53</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    <br/><hr>
+  </section>
+
+
+
+
+
+
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This Website is under <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International</a> License.
+            </p>
+            <p>
+              Copyright © <strong>LiDARCrafter</strong> 2025 All Rights Reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const lazyVideos = document.querySelectorAll("video.lazy-video");
+  
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const video = entry.target;
+              const src = video.getAttribute("data-src");
+              if (src) {
+                video.src = src;
+                video.load();
+                video.classList.remove("lazy-video");
+                obs.unobserve(video);
+              }
+            }
+          });
+        });
+  
+        lazyVideos.forEach(video => observer.observe(video));
+      } else {
+        // Fallback: load all immediately if IntersectionObserver not supported
+        lazyVideos.forEach(video => {
+          const src = video.getAttribute("data-src");
+          if (src) {
+            video.src = src;
+            video.load();
+            video.classList.remove("lazy-video");
+          }
+        });
+      }
+    });
+  </script>
+  
+
+</body>
+
+</html>
