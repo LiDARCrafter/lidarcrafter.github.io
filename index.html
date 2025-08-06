@@ -295,51 +295,84 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class=" column is-full-width has-text-centered">
-          </br>
-          <img src="./static/images/framework.png" />
-          <div class="content has-text-justified" style="padding-top: 10px">
-            <p>
-              Framework of <b>LiDARCrafter</b>. In the <b>Text2Layout</b> stage, the natural-language instruction is parsed into an ego-centric scene graph, and a tri-branch diffusion network generates 4D conditions for bounding boxes, future trajectories, and object point clouds. 
-              In the <b>Layout2Scene</b> stage, a range-image diffusion model uses these conditions to generate a static LiDAR frame. In the <b>Scene2Seq</b> stage, an autoregressive module warps historical points with ego and object motion priors to generate each subsequent frame, producing a temporally coherent LiDAR sequence.
-            </p>            
+            </br>
+            <img src="./static/images/framework.png" />
+            <div class="content has-text-justified" style="padding-top: 10px">
+              <p>
+                Framework of <b>LiDARCrafter</b>. In the <b>Text2Layout</b> stage, the natural-language instruction is parsed into an ego-centric scene graph, and a tri-branch diffusion network generates 4D conditions for bounding boxes, future trajectories, and object point clouds. 
+                In the <b>Layout2Scene</b> stage, a range-image diffusion model uses these conditions to generate a static LiDAR frame. In the <b>Scene2Seq</b> stage, an autoregressive module warps historical points with ego and object motion priors to generate each subsequent frame, producing a temporally coherent LiDAR sequence.
+              </p>            
+            </div>
+            <hr>
           </div>
-          <hr>
         </div>
       </div>
-    </div>
 
   </section>
 
+
+
   <section class="section" id="experiments">
-    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Experiments</h2>
-    </div>
+    <!-- <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Experiments</h2>
+    </div> -->
       <div class="container is-max-desktop"><h3 class="title is-2 has-text-centered">4D Layout Generation</h3>
       </div>
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class=" column is-full-width has-text-centered">
+            </br>
+            <img src="./static/images/gen-4d-layout.png" />
+            <div class="content has-text-justified" style="padding-top: 10px">
+              <p>
+                
+              </p>            
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+
+
 
       <div class="container is-max-desktop"><h3 class="title is-2 has-text-centered">Single Frame Generation</h3>
       </div>
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class=" column is-full-width has-text-centered">
+            </br>
+            <img src="./static/images/gen-single-frame.png" />
+            <div class="content has-text-justified" style="padding-top: 10px">
+              <p>
+                
+              </p>            
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+
+
 
       <div class="container is-max-desktop"><h3 class="title is-2 has-text-centered">Foreground Objects Quality</h3>
         <div class="container is-max-desktop">
-          <h3 class="title is-2 has-text-centered">Foreground Objects Quality</h3>
         
           <div class="columns">
             <div class="column is-one-third">
               <video controls loop width="100%">
                 <source src="static/videos/fg_objects/ours/cars/0.mp4" type="video/mp4">
-                Your browser doesn’t support the video tag.
+                Your browser doesn't support the video tag.
               </video>
             </div>
             <div class="column is-one-third">
               <video controls loop width="100%">
                 <source src="static/videos/fg_objects/ours/cars/1.mp4" type="video/mp4">
-                Your browser doesn’t support the video tag.
+                Your browser doesn't support the video tag.
               </video>
             </div>
             <div class="column is-one-third">
               <video controls loop width="100%">
                 <source src="static/videos/fg_objects/ours/cars/2.mp4" type="video/mp4">
-                Your browser doesn’t support the video tag.
+                Your browser doesn't support the video tag.
               </video>
             </div>
           </div>
